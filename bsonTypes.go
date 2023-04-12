@@ -26,10 +26,7 @@ func detectDateComparisonOperator(field string, values []string) bson.M {
 			gtValue := value[4:]
 			ltValue := values[1]
 			filter := bson.M{
-				field: bson.D{
-					primitive.E{Key: "$gte", Value: gtValue},
-					primitive.E{Key: "$lte", Value: ltValue},
-				},
+				field: bson.D{{"$gte", gtValue}, {"$lte", ltValue}},
 			}
 			return filter
 		}
@@ -173,10 +170,7 @@ func detectNumericComparisonOperator(field string, values []string, numericType 
 			gtValue := value[4:]
 			ltValue := values[1]
 			filter := bson.M{
-				field: bson.D{
-					primitive.E{Key: "$gte", Value: gtValue},
-					primitive.E{Key: "$lte", Value: ltValue},
-				},
+				field: bson.D{{"$gte", gtValue}, {"$lte", ltValue}},
 			}
 			return filter
 		}
@@ -366,10 +360,7 @@ func detectStringComparisonOperator(field string, values []string, bsonType stri
 			gtValue := value[4:]
 			ltValue := values[1]
 			filter := bson.M{
-				field: bson.D{
-					primitive.E{Key: "$gte", Value: gtValue},
-					primitive.E{Key: "$lte", Value: ltValue},
-				},
+				field: bson.D{{"$gte", gtValue}, {"$lte", ltValue}},
 			}
 			return filter
 		}
