@@ -24,6 +24,7 @@ func detectDateComparisonOperator(field string, values []string) bson.M {
 		value := values[0]
 		if value[0:4] == "=>=<" {
 			gtValue := value[4:]
+			gtDate, _ := time.Parse(time.RFC3339, gtValue)
 			ltValue := values[1]
 			filter := bson.M{
 				field: bson.M{"$gte": gtValue, "$lte": ltValue},
@@ -354,19 +355,6 @@ func detectStringComparisonOperator(field string, values []string, bsonType stri
 		}
 
 		return filter
-	}
-
-	if len(values) == 2 {
-		value := values[0]
-		if value[0:4] == "=>=<" {
-			gtValue := value[4:]
-			ltValue := values[1]
-			filter := bson.M{
-				field: bson.M{"$gte": gtValue, "$lte": ltValue},
-			}
-			return filter
-		}
-
 	}
 	// if values is greater than 0, use an $in clause
 	if len(values) > 1 {
