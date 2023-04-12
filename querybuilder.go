@@ -73,10 +73,10 @@ func NewQueryBuilder(collection string, schema bson.M, strictValidation ...bool)
 // * maxKey
 func (qb QueryBuilder) Filter(qo queryoptions.Options) (bson.M, error) {
 	filter := bson.M{}
-	fmt.Printf("fffffffffffffffff query options %v\n", qo)
+	// fmt.Printf("fffffffffffffffff query options %v\n", qo)
 	if len(qo.Filter) > 0 {
 		for field, values := range qo.Filter {
-			fmt.Printf("ffffffffffff field, value %v-------------%v\n", field, values)
+			// fmt.Printf("ffffffffffff field, value %v-------------%v\n", field, values)
 
 			var bsonType string
 

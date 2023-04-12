@@ -26,8 +26,9 @@ func detectDateComparisonOperator(field string, values []string) bson.M {
 			gtValue := value[4:]
 			gtDate, _ := time.Parse(time.RFC3339, gtValue)
 			ltValue := values[1]
+			ltDate, _ := time.Parse(time.RFC3339, ltValue)
 			filter := bson.M{
-				field: bson.M{"$gte": gtValue, "$lte": ltValue},
+				field: bson.M{"$gte": gtDate, "$lte": ltDate},
 			}
 			return filter
 		}
@@ -35,7 +36,7 @@ func detectDateComparisonOperator(field string, values []string) bson.M {
 	}
 
 	// if values is greater than 0, use an $in clause
-	fmt.Printf("fffffffffffffffffffff values: %v\n\n", values)
+	// fmt.Printf("fffffffffffffffffffff values: %v\n\n", values)
 	if len(values) > 1 {
 		a := bson.A{}
 
@@ -59,7 +60,7 @@ func detectDateComparisonOperator(field string, values []string) bson.M {
 
 	value := values[0]
 	var oper string
-	fmt.Printf("fffffffffffffffffffff value: %v\n", value)
+	// fmt.Printf("fffffffffffffffffffff value: %v\n", value)
 	// check if string value is long enough for a 2 char prefix
 	if len(value) >= 3 {
 		var uv string
@@ -146,7 +147,7 @@ func detectDateComparisonOperator(field string, values []string) bson.M {
 }
 
 func detectNumericComparisonOperator(field string, values []string, numericType string) bson.M {
-	fmt.Printf("fffffffffffffffffffff values: %v\n", values)
+	// fmt.Printf("fffffffffffffffffffff values: %v\n", values)
 	if len(values) == 0 {
 		return nil
 	}
@@ -218,7 +219,7 @@ func detectNumericComparisonOperator(field string, values []string, numericType 
 
 	var oper string
 	value := values[0]
-	fmt.Printf("fffffffffffffffffffff value: %v\n", value)
+	// fmt.Printf("fffffffffffffffffffff value: %v\n", value)
 	// check if string value is long enough for a 2 char prefix
 	if len(value) >= 3 {
 		var uv string
@@ -323,7 +324,7 @@ func detectNumericComparisonOperator(field string, values []string, numericType 
 }
 
 func detectStringComparisonOperator(field string, values []string, bsonType string) bson.M {
-	fmt.Printf("fffffffffffffffffffff values: %v\n", values)
+	// fmt.Printf("fffffffffffffffffffff values: %v\n", values)
 	if len(values) == 0 {
 		return nil
 	}
@@ -379,7 +380,7 @@ func detectStringComparisonOperator(field string, values []string, bsonType stri
 
 	// single value
 	value := values[0]
-	fmt.Printf("fffffffffffffffffffff value: %v\n", value)
+	// fmt.Printf("fffffffffffffffffffff value: %v\n", value)
 	// ensure we have a word/value to filter with
 	if !reWord.MatchString(value) {
 		return nil
