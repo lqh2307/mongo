@@ -21,7 +21,8 @@ func detectDateComparisonOperator(field string, values []string) bson.M {
 	}
 
 	// if values is greater than 0, use an $in clause
-	fmt.Printf("fffffffffffffffffffff values: %v", values)
+	fmt.Print("fffffffffffffffff")
+	fmt.Print(values)
 	if len(values) > 1 {
 		a := bson.A{}
 
@@ -45,7 +46,8 @@ func detectDateComparisonOperator(field string, values []string) bson.M {
 
 	value := values[0]
 	var oper string
-	fmt.Printf("fffffffffffffffffffff value: %v\n", value)
+	fmt.Print("fffffffffffffffff")
+	fmt.Print(value)
 	// check if string value is long enough for a 2 char prefix
 	if len(value) >= 3 {
 		var uv string
@@ -132,7 +134,8 @@ func detectDateComparisonOperator(field string, values []string) bson.M {
 }
 
 func detectNumericComparisonOperator(field string, values []string, numericType string) bson.M {
-	fmt.Printf("fffffffffffffffffffff values: %v\n", values)
+	fmt.Print("fffffffffffffffff")
+	fmt.Print(values)
 	if len(values) == 0 {
 		return nil
 	}
@@ -189,7 +192,8 @@ func detectNumericComparisonOperator(field string, values []string, numericType 
 
 	var oper string
 	value := values[0]
-	fmt.Printf("fffffffffffffffffffff value: %v\n", value)
+	fmt.Print("fffffffffffffffff")
+	fmt.Print(value)
 	// check if string value is long enough for a 2 char prefix
 	if len(value) >= 3 {
 		var uv string
@@ -294,7 +298,8 @@ func detectNumericComparisonOperator(field string, values []string, numericType 
 }
 
 func detectStringComparisonOperator(field string, values []string, bsonType string) bson.M {
-	fmt.Printf("fffffffffffffffffffff values: %v\n", values)
+	fmt.Print("fffffffffffffffff")
+	fmt.Print(values)
 	if len(values) == 0 {
 		return nil
 	}
@@ -352,7 +357,8 @@ func detectStringComparisonOperator(field string, values []string, bsonType stri
 
 	// single value
 	value := values[0]
-	fmt.Printf("fffffffffffffffffffff value: %v\n", value)
+	fmt.Print("fffffffffffffffff")
+	fmt.Print(value)
 	// ensure we have a word/value to filter with
 	if !reWord.MatchString(value) {
 		return nil
