@@ -1,4 +1,4 @@
-module go.jtlabs.io/mongo
+module github.com/nguyenngodinh/mongo
 
 go 1.17
 
