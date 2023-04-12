@@ -360,6 +360,21 @@ func detectStringComparisonOperator(field string, values []string, bsonType stri
 		return filter
 	}
 
+	if len(values) == 2 {
+		value := values[0]
+		if value[0:3] == "<=>" {
+			gtValue := value[4:]
+			ltValue := values[1]
+			filter := bson.M{
+				field: bson.D{
+					primitive.E{Key: "$gte", Value: gtValue},
+					primitive.E{Key: "$lte", Value: ltValue},
+				},
+			}
+			return filter
+		}
+
+	}
 	// if values is greater than 0, use an $in clause
 	if len(values) > 1 {
 		a := bson.A{}
