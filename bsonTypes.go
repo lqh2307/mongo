@@ -22,7 +22,7 @@ func detectDateComparisonOperator(field string, values []string) bson.M {
 
 	if len(values) == 2 {
 		value := values[0]
-		if value[0:3] == "<=>" {
+		if value[0:3] == ">=<" {
 			gtValue := value[3:]
 			ltValue := values[1]
 			filter := bson.M{
@@ -166,11 +166,13 @@ func detectNumericComparisonOperator(field string, values []string, numericType 
 
 	if len(values) == 2 {
 		value := values[0]
-		if value[0:3] == "<=>" {
+		if value[0:3] == ">=<" {
 			gtValue := value[3:]
+			gtNum := str2num(numericType, gtValue)
 			ltValue := values[1]
+			ltNum := str2num(numericType, ltValue)
 			filter := bson.M{
-				field: bson.M{"$gte": gtValue, "$lte": ltValue},
+				field: bson.M{"$gte": gtNum, "$lte": ltNum},
 			}
 			return filter
 		}
@@ -356,7 +358,7 @@ func detectStringComparisonOperator(field string, values []string, bsonType stri
 
 	if len(values) == 2 {
 		value := values[0]
-		if value[0:3] == "<=>" {
+		if value[0:3] == ">=<" {
 			gtValue := value[3:]
 			ltValue := values[1]
 			filter := bson.M{
@@ -500,4 +502,38 @@ func combine(a bson.M, b bson.M) bson.M {
 	}
 
 	return a
+}
+func str2num(numericType string, value string) interface{} {
+	var bitSize int
+	switch numericType {
+	case "decimal":
+		bitSize = 32
+	case "double":
+		bitSize = 64
+	case "int":
+		bitSize = 32
+	case "long":
+		bitSize = 64
+	default:
+		return nil
+	}
+	var pv interface{}
+	if numericType == "decimal" || numericType == "double" {
+		v, _ := strconv.ParseFloat(value, bitSize)
+		pv = v
+
+		// retype 32 bit
+		if bitSize == 32 {
+			pv = float32(v)
+		}
+	} else {
+		v, _ := strconv.ParseInt(value, 0, bitSize)
+		pv = v
+
+		// retype 32 bit
+		if bitSize == 32 {
+			pv = int32(v)
+		}
+	}
+	return pv
 }
