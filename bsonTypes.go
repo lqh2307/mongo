@@ -22,7 +22,7 @@ func detectDateComparisonOperator(field string, values []string) bson.M {
 
 	if len(values) == 2 {
 		value := values[0]
-		if len(value)>=5 value[0:4] == "=>=<" {
+		if len(value)>=5 && value[0:4] == "=>=<" {
 			gtValue := value[4:]
 			gtDate, _ := time.Parse(time.RFC3339, gtValue)
 			ltValue := values[1]
