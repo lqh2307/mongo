@@ -1,4 +1,4 @@
-module github.com/lqh2307/mongo
+module github.com/lqh2307/mongo-query-options
 
 go 1.19
 
