@@ -3,8 +3,10 @@ package querybuilder
 import (
 	"fmt"
 	"strconv"
+	"strings"
 
 	queryoptions "go.jtlabs.io/query"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -73,59 +75,52 @@ func NewQueryBuilder(collection string, schema bson.M, strictValidation ...bool)
 // * maxKey
 func (qb QueryBuilder) Filter(qo queryoptions.Options) (bson.M, error) {
 	filter := bson.M{}
-	// fmt.Printf("fffffffffffffffff query options %v\n", qo)
-	if len(qo.Filter) > 0 {
-		for field, values := range qo.Filter {
-			// fmt.Printf("ffffffffffff field, value %v-------------%v\n", field, values)
 
-			var bsonType string
+	for field, values := range qo.Filter {
+		var bsonType string
 
-			// lookup the field
-			if bt, ok := qb.fieldTypes[field]; ok {
-				bsonType = bt
+		// lookup the field
+		if bt, ok := qb.fieldTypes[field]; ok {
+			bsonType = strings.TrimSpace(strings.ToLower(bt))
+		}
+
+		// check for strict field validation
+		if bsonType == "" && qb.strictValidation {
+			return nil, fmt.Errorf("field %s does not exist in collection %s", field, qb.collection)
+		}
+
+		switch bsonType {
+		default: {
+			continue
+		}
+
+		case "array": {
+			filter = combine(filter, detectStringComparisonOperator(field, values, bsonType))
+		}
+
+		case "bool": {
+			for _, value := range values {
+				bv, _ := strconv.ParseBool(value)
+				filter = combine(filter, primitive.M{field: bv})
 			}
+		}
 
-			// check for strict field validation
-			if bsonType == "" && qb.strictValidation {
-				return nil, fmt.Errorf("field %s does not exist in collection %s", field, qb.collection)
-			}
+		case "timestamp":
+		case "date": {
+			filter = combine(filter, detectDateComparisonOperator(field, values))
+		}
 
-			switch bsonType {
-			case "array":
-				f := detectStringComparisonOperator(field, values, bsonType)
-				filter = combine(filter, f)
-			case "bool":
-				for _, value := range values {
-					bv, _ := strconv.ParseBool(value)
-					f := primitive.M{field: bv}
-					filter = combine(filter, f)
-				}
-			case "date":
-				f := detectDateComparisonOperator(field, values)
-				filter = combine(filter, f)
-			case "decimal":
-				f := detectNumericComparisonOperator(field, values, bsonType)
-				filter = combine(filter, f)
-			case "double":
-				f := detectNumericComparisonOperator(field, values, bsonType)
-				filter = combine(filter, f)
-			case "int":
-				f := detectNumericComparisonOperator(field, values, bsonType)
-				filter = combine(filter, f)
-			case "long":
-				f := detectNumericComparisonOperator(field, values, bsonType)
-				filter = combine(filter, f)
-			case "object":
-				f := detectStringComparisonOperator(field, values, bsonType)
-				filter = combine(filter, f)
-			case "string":
-				f := detectStringComparisonOperator(field, values, bsonType)
-				filter = combine(filter, f)
-			case "timestamp":
-				// handle just like dates
-				f := detectDateComparisonOperator(field, values)
-				filter = combine(filter, f)
-			}
+		case "decimal":
+		case "double":
+		case "int":
+		case "long":
+		case: "number": {
+			filter = combine(filter, detectNumericComparisonOperator(field, values, bsonType))
+		}
+
+		case "object":
+		case "string": {
+			filter = combine(filter, detectStringComparisonOperator(field, values, bsonType))
 		}
 	}
 
