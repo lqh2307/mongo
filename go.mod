@@ -1,6 +1,6 @@
-module github.com/nguyenngodinh/mongo
+module github.com/lqh2307/mongo
 
-go 1.17
+go 1.19
 
 require (
 	go.jtlabs.io/query v1.5.0
